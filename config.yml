@@ -1,0 +1,5 @@
+debug: false
+armySize: 25
+singleSelectionTool: feather
+groupSelectionTool: blaze_rod
+groupSelectionRadius: 5

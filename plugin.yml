@@ -1,0 +1,10 @@
+main: com.amoebaman.mcrts.RTSPlugin
+
+name: MCRTS
+version: 1.0
+author: AmoebaMan
+description: Unit-based real-time-strategy for Minecraft
+depend:
+commands:
+  order:
+  army:
