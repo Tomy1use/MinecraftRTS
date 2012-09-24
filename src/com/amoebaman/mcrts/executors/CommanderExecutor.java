@@ -1,5 +1,7 @@
  package com.amoebaman.mcrts.executors;
 
+import java.util.ArrayList;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
@@ -21,6 +23,14 @@ public class CommanderExecutor implements CommandExecutor{
 				return true;
 			Player player = (Player) sender;
 			RTSPlayer rtsPlayer = RTSPlugin.getRTSPlayer(player);
+			
+			if(args[0].equalsIgnoreCase("suicide")){
+				ArrayList<Unit> copy = new ArrayList<Unit>();
+				copy.addAll(rtsPlayer.selected);
+				for(Unit unit : copy)
+					if(unit != null)
+						unit.die();
+			}
 
 			if(args[0].equalsIgnoreCase("goto")){
 				LocationObjective obj = new LocationObjective(player.getLastTwoTargetBlocks(null, 100).get(0).getLocation(), Aggression.PASSIVE, Aggression.PASSIVE_AGGRESSIVE, 4, 16);
@@ -56,6 +66,7 @@ public class CommanderExecutor implements CommandExecutor{
 					unit.setObjective(obj);
 				player.sendMessage(rtsPlayer.selected.size() + " selected units are now protecting you");
 			}
+
 		}
 		catch(Exception e){
 			sender.sendMessage(e.getClass().getName() + " - " + e.getMessage());

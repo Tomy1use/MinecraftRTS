@@ -4,7 +4,9 @@ name: MCRTS
 version: 1.0
 author: AmoebaMan
 description: Unit-based real-time-strategy for Minecraft
-depend:
+
 commands:
-  order:
   army:
+    description: Manage your army
+  order:
+    description: Issue orders to all selected units in your army

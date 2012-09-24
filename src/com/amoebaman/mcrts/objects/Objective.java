@@ -18,13 +18,9 @@ public abstract class Objective implements Serializable{
 	}
 	
 	public Aggression getTransitAggression(){ return transitAggression; }
-	
 	public Aggression getDestinationAggression(){ return destinationAggression; }
-	
-	public int getFreedom(){ return freedom; }
-	
 	public int getSightRange(){ return sightRange; }
-	
+	public int getFreedom(){ return freedom; }
 	public abstract Location getTargetLoc();
 	public abstract void update(Unit unit);
 	

@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.minecraft.server.PathEntity;
 import net.minecraft.server.PathPoint;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
@@ -16,6 +17,7 @@ import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 
 import com.amoebaman.mcrts.RTSPlugin;
 import com.amoebaman.mcrts.objects.Objective.Aggression;
+import com.amoebaman.mcrts.utilities.S_Location;
 
 public class Unit implements Serializable{
 
@@ -24,6 +26,7 @@ public class Unit implements Serializable{
 	private EntityType type;
 	private RTSPlayer commander;
 	private Objective objective;
+	private S_Location lastLoc;
 
 	public Unit(Creature entity, RTSPlayer commander){
 		type = entity.getType();
@@ -32,8 +35,18 @@ public class Unit implements Serializable{
 		commander.army.add(this);
 	}
 	
+	public void die(){
+		commander.army.remove(this);
+		commander.selected.remove(this);
+		if(getEntity() != null)
+			getEntity().remove();
+		commander.getPlayer().sendMessage(ChatColor.GRAY + "A(n) " + type.toString().replace("_", " ").toLowerCase() + " in your army has died");
+	}
+	
 	public UUID getUUID(){ return entityUUID; }
-	public Creature getEntity(){ return RTSPlugin.getEntityFromUUID(entityUUID); }
+	public Creature getEntity(){ return (Creature) RTSPlugin.getEntityFromUUID(entityUUID); }
+	public Location getLastLocation(){ return S_Location.deserialize(lastLoc); }
+	public void setLastLocation(Location loc){ if(loc != null) lastLoc = S_Location.serialize(loc); }
 	public EntityType getType(){ return type; }
 	public String toString(){ return RTSPlugin.getEntityFromUUID(entityUUID).getType().getName() + " for " + commander.name; }
 	public RTSPlayer getCommander(){ return commander; }

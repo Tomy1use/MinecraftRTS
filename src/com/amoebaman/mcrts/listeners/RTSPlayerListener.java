@@ -91,7 +91,7 @@ public class RTSPlayerListener implements Listener{
 		if(unit == null)
 			return;
 		player.sendMessage(unit.toString());
-		player.sendMessage(unit.getObjective().getClass().getName() + " @ " + S_Location.toString(unit.getObjective().getTargetLoc()));
+		player.sendMessage(unit.getObjective().getClass().getSimpleName() + " @ " + S_Location.toString(unit.getObjective().getTargetLoc()));
 		player.sendMessage(unit.getAggro().name() + " - " + unit.getObjective().getSightRange());
 	}
 	

@@ -29,6 +29,8 @@ public class S_Location implements Serializable{
 	}
 	
 	public static Location deserialize(S_Location sLoc){
+		if(sLoc == null)
+			return null;
 		return new Location(Bukkit.getWorld(sLoc.worldName), sLoc.x, sLoc.y, sLoc.z, sLoc.yaw, sLoc.pitch);
 	}
 	

@@ -78,24 +78,25 @@ public class RTSPlugin extends JavaPlugin{
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){ public void run(){
 			try{
-				persistArmies();
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		} }, 0, 100);
-		
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){ public void run(){
-			try{
 				for(RTSPlayer rtsPlayer : rtsPlayers)
 					for(Unit unit : rtsPlayer.army)
-						unit.getObjective().update(unit);
+						if(unit.getObjective() != null)
+							unit.getObjective().update(unit);
 				showSelectedUnits();
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
 		} }, 0, 20);
+		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){ public void run(){
+			try{
+				persistArmies();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		} }, 0, 100);
 	}
 	
 	public void onDisable(){
@@ -124,11 +125,11 @@ public class RTSPlugin extends JavaPlugin{
 		return null;
 	}
 	
-	public static Creature getEntityFromUUID(UUID id){
+	public static LivingEntity getEntityFromUUID(UUID id){
 		for(World world : Bukkit.getWorlds())
 			for(LivingEntity entity : world.getLivingEntities())
-				if(entity.getUniqueId().equals(id) && entity instanceof Creature)
-					return (Creature) entity;
+				if(entity.getUniqueId().equals(id))
+					return entity;
 		return null;
 	}
 	
@@ -151,7 +152,7 @@ public class RTSPlugin extends JavaPlugin{
 			ArrayList<Unit> toReplace = new ArrayList<Unit>();
 			for(Unit unit : rtsPlayer.army){
 				LivingEntity entity = getEntityFromUUID(unit.getUUID());
-				if(entity == null)
+				if(entity == null && unit.getLastLocation() != null && unit.getLastLocation().getChunk().isLoaded())
 					toReplace.add(unit);
 			}
 			for(Unit unit : toReplace){
@@ -168,7 +169,7 @@ public class RTSPlugin extends JavaPlugin{
 		for(RTSPlayer rtsPlayer : rtsPlayers)
 			for(Unit unit : rtsPlayer.selected){
 				Player player = getPlayer(rtsPlayer);
-				if(player != null)
+				if(player != null && unit.getEntity() != null)
 					player.playEffect(unit.getEntity().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 			}
 	}

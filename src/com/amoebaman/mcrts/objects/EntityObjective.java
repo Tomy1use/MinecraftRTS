@@ -21,13 +21,20 @@ public class EntityObjective extends Objective{
 	
 	public void update(Unit unit){
 		Creature unitEntity = unit.getEntity();
+		if(unitEntity == null){
+			if(unit.getLastLocation() != null && !unit.getLastLocation().getChunk().isLoaded())
+				return;
+			else
+				unit.die();
+		}
+		unit.setLastLocation(unitEntity.getLocation());
 		unit.moveTo(getTargetLoc());
 		if(unit.getAggro() == Aggression.AGGRESSIVE_EXCLUSIVE)
 			unit.targetEntity(getTargetEntity());
 		if(unit.getAggro() == Aggression.AGGRESSIVE){
 			LivingEntity closest = null;
 			double distance = getSightRange();
-			for(Entity other : unitEntity.getNearbyEntities(getSightRange(), getSightRange(), getSightRange()))
+			for(Entity other : unitEntity.getNearbyEntities(getSightRange(), getSightRange()/3, getSightRange()))
 				if(RTSPlugin.armyUnits.contains(other.getType()) && !unit.isFriendly((LivingEntity) other)){
 					double d = RTSPlugin.distance(unitEntity, (LivingEntity) other);
 					if(d < distance){

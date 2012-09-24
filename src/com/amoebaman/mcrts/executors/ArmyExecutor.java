@@ -1,10 +1,14 @@
 package com.amoebaman.mcrts.executors;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import com.amoebaman.mcrts.RTSPlugin;
@@ -19,32 +23,46 @@ public class ArmyExecutor implements CommandExecutor{
 				sender.sendMessage(ChatColor.RED + "Requires player context");
 				return true;
 			}
+			if(args == null || args.length == 0)
+				return true;
 			Player player = (Player) sender;
 			RTSPlayer rtsPlayer = RTSPlugin.getRTSPlayer(player);
 
 			if(args[0].equalsIgnoreCase("list")){
-				int page = 1;
 				RTSPlayer target = rtsPlayer;
 				if(args.length > 1)
-					page = Integer.parseInt(args[1]);
-				if(args.length > 2)
 					target = RTSPlugin.getRTSPlayer(Bukkit.getPlayer(args[2]));
 				if(target == null){
 					player.sendMessage(ChatColor.RED + "Specified RTS player does not exist");
 					return true;
 				}
-				player.sendMessage(ChatColor.GOLD + target.name + "'s army (" + page + "/" + (int)Math.ceil(target.army.size() / 8.0) + ")");
-				for(int i = (page - 1) * 10; i < page * 10 && i < target.army.size(); i++)
-					player.sendMessage("" + ChatColor.DARK_GRAY + (i+1) + " // " + ChatColor.GRAY + target.army.get(i).toString());
+				HashMap<EntityType, Integer> numUnits = new HashMap<EntityType, Integer>();
+				for(Unit unit : rtsPlayer.army){
+					if(!numUnits.containsKey(unit.getType()))
+						numUnits.put(unit.getType(), 0);
+					numUnits.put(unit.getType(), numUnits.get(unit.getType()) + 1);
+				}
+				HashMap<EntityType, Integer> numSelected = new HashMap<EntityType, Integer>();
+				for(Unit unit : rtsPlayer.selected){
+					if(!numSelected.containsKey(unit.getType()))
+						numSelected.put(unit.getType(), 0);
+					numSelected.put(unit.getType(), numSelected.get(unit.getType()) + 1);
+				}
+				player.sendMessage(ChatColor.GOLD + target.name + "'s army");
+				for(EntityType type : numUnits.keySet()){
+					String message = "" + ChatColor.GRAY + numUnits.get(type) + " " + type.name().toLowerCase().replaceAll("_", " ") + "s";
+					if(numSelected.containsKey(type))
+						message += ChatColor.DARK_GRAY + " (" + numSelected.get(type) + " selected)";
+					player.sendMessage(message);
+				}
 			}
 
 			if(args[0].equalsIgnoreCase("killall")){
-				for(Unit unit : rtsPlayer.army)
-					if(unit != null && unit.getEntity() != null)
-						unit.getEntity().remove();
-				rtsPlayer.army.clear();
-				rtsPlayer.selected.clear();
-				player.sendMessage(ChatColor.RED + "All units in army killed");
+				ArrayList<Unit> copy = new ArrayList<Unit>();
+				copy.addAll(rtsPlayer.army);
+				for(Unit unit : copy)
+					if(unit != null)
+						unit.die();
 			}
 			
 			if(args[0].equalsIgnoreCase("select")){

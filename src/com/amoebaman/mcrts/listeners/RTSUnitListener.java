@@ -1,14 +1,16 @@
 package com.amoebaman.mcrts.listeners;
 
-import org.bukkit.ChatColor;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
 import com.amoebaman.mcrts.RTSPlugin;
 import com.amoebaman.mcrts.objects.EntityObjective;
-import com.amoebaman.mcrts.objects.RTSPlayer;
 import com.amoebaman.mcrts.objects.Unit;
 
 public class RTSUnitListener implements Listener{
@@ -18,10 +20,7 @@ public class RTSUnitListener implements Listener{
 		Unit unit = RTSPlugin.getUnitFromUUID(event.getEntity().getUniqueId());
 		if(unit == null)
 			return;
-		RTSPlayer rtsPlayer = unit.getCommander();
-		rtsPlayer.army.remove(unit);
-		rtsPlayer.selected.remove(unit);
-		rtsPlayer.getPlayer().sendMessage(ChatColor.GRAY + "A(n) " + unit.getType().toString().replace("_", " ").toLowerCase() + " in your army has died");
+		unit.die();
 	}
 	
 	@EventHandler
@@ -45,6 +44,28 @@ public class RTSUnitListener implements Listener{
 		if(unit.isFriendly(event.getTarget()))
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void preventFriendlyFire(EntityDamageEvent e){
+		if(!(e instanceof EntityDamageByEntityEvent))
+			return;
+		EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
+		Unit victim = RTSPlugin.getUnitFromUUID(event.getEntity().getUniqueId());
+		if(victim == null)
+			return;
+		LivingEntity attacker = null;
+		if(event.getDamager() instanceof LivingEntity)
+			attacker = (LivingEntity) event.getEntity();
+		if(event.getDamager() instanceof Projectile){
+			Projectile proj = (Projectile) event.getDamager();
+			if(proj.getShooter() != null)
+				attacker = proj.getShooter();
+		}
+		if(attacker == null)
+			return;
+		if(victim.isFriendly(attacker))
+			event.setCancelled(true);
 	}
 
 }
