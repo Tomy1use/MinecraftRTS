@@ -3,17 +3,17 @@ package com.amoebaman.mcrts.objects;
 import java.io.Serializable;
 import java.util.UUID;
 
-import net.minecraft.server.PathEntity;
-import net.minecraft.server.PathPoint;
+import net.minecraft.server.v1_4_6.PathEntity;
+import net.minecraft.server.v1_4_6.PathPoint;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.craftbukkit.entity.CraftCreature;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 
 import com.amoebaman.mcrts.RTSPlugin;
 import com.amoebaman.mcrts.objects.Objective.Aggression;
