@@ -3,6 +3,7 @@ package com.amoebaman.mcrts.objects;
 import java.io.Serializable;
 import java.util.UUID;
 
+<<<<<<< HEAD
 import net.minecraft.server.v1_4_6.PathEntity;
 import net.minecraft.server.v1_4_6.PathPoint;
 
@@ -10,6 +11,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
+=======
+import net.minecraft.server.v1_6_R3.PathPoint;
+import net.minecraft.server.v1_6_R3.PathEntity;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_6_R3.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_6_R3.entity.CraftLivingEntity;
+>>>>>>> abfc5df6cf84ab463fedcc9810a8dc4168077c90
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
